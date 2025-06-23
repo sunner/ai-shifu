@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 
 import OutlineSelector from '@/components/outline-selector'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
@@ -96,22 +96,7 @@ export default memo(function Goto(props: GotoProps) {
         });
     }
 
-    const loadProfileItemDefinations = async (preserveSelection: boolean = false) => {
-        const list = await api.getProfileItemDefinitions({
-            parent_id: currentShifu?.shifu_id
-        })
-        setProfileItemDefinations(list)
-
-        if (!preserveSelection && list.length > 0) {
-            const initialSelected = list.find((item) => item.profile_key === properties.goto_settings?.profile_key);
-            if (initialSelected) {
-                setSelectedProfile(initialSelected);
-                await loadProfileItem(initialSelected.profile_id, initialSelected.profile_key);
-            }
-        }
-    }
-
-    const loadProfileItem = async (id: string, name: string) => {
+    const loadProfileItem = useCallback(async (id: string, name: string) => {
         const list = await api.getProfileItemOptionList({
             parent_id: id
         })
@@ -125,11 +110,26 @@ export default memo(function Goto(props: GotoProps) {
                 }
             })
         });
-    }
+    }, []);
+
+    const loadProfileItemDefinations = useCallback(async (preserveSelection: boolean = false) => {
+        const list = await api.getProfileItemDefinitions({
+            parent_id: currentShifu?.shifu_id
+        })
+        setProfileItemDefinations(list)
+
+        if (!preserveSelection && list.length > 0) {
+            const initialSelected = list.find((item) => item.profile_key === properties.goto_settings?.profile_key);
+            if (initialSelected) {
+                setSelectedProfile(initialSelected);
+                await loadProfileItem(initialSelected.profile_id, initialSelected.profile_key);
+            }
+        }
+    }, [currentShifu?.shifu_id, properties.goto_settings?.profile_key, loadProfileItem]);
 
     useEffect(() => {
         loadProfileItemDefinations();
-    }, [])
+    }, [loadProfileItemDefinations])
 
     const handleValueChange = async (value: string) => {
         if (!changed) {

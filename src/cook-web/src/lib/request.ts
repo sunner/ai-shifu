@@ -47,7 +47,6 @@ async function* makeTextSteamLineIterator(reader: ReadableStreamDefaultReader) {
   let startIndex = 0;
 
   for (; ;) {
-    // eslint-disable-next-line prefer-const
     const result = re.exec(chunk);
     if (!result) {
       if (readerDone) {

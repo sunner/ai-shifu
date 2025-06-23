@@ -18,7 +18,8 @@ import {
   ReactNode,
   useContext,
   useState,
-  useCallback
+  useCallback,
+  useMemo
 } from 'react'
 
 const ShifuContext = createContext<ShifuContextType | undefined>(undefined)
@@ -93,7 +94,7 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
   const UITypes = useUITypes()
   const ContentTypes = useContentTypes()
 
-  const loadShifu = async (shifuId: string) => {
+  const loadShifu = useCallback(async (shifuId: string) => {
     try {
       setIsLoading(true)
       setError(null)
@@ -107,8 +108,8 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
     } finally {
       setIsLoading(false)
     }
-  }
-  const recursiveCataData = (cataTree: Outline[]): any => {
+  }, []);
+  const recursiveCataData = useCallback((cataTree: Outline[]): any => {
     const result: any = {}
     const processItem = (item: any, parentId = '', depth = 0) => {
       result[item.id] = {
@@ -130,12 +131,12 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
       processItem(child, '', 0)
     })
     return result
-  }
-  const buildOutlineTree = (items: Outline[]) => {
+  }, [cataData]);
+  const buildOutlineTree = useCallback((items: Outline[]) => {
     const treeData = recursiveCataData(items)
     setCataData(treeData)
     return treeData
-  }
+  }, [recursiveCataData]);
   const findNode = (id: string) => {
     const find = (nodes: Outline[]): any => {
       for (let i = 0; i < nodes.length; i++) {
@@ -211,14 +212,50 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
     }
   }
 
-  const loadProfileItemDefinations = async (shifuId: string) => {
+  const loadProfileItemDefinations = useCallback(async (shifuId: string) => {
     const list = await api.getProfileItemDefinitions({
       parent_id: shifuId,
       type: 'all'
     })
     setProfileItemDefinations(list)
-  }
-  const loadChapters = async (shifuId: string) => {
+  }, []);
+
+  const setBlockError = useCallback((blockId: string, error: string | null) => {
+    setBlockErrors(prev => ({
+      ...prev,
+      [blockId]: error
+    }))
+  }, []);
+
+  const clearBlockErrors = useCallback(() => {
+    setBlockErrors({})
+  }, []);
+
+  const loadBlocks = useCallback(async (outlineId: string, shifuId: string) => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      clearBlockErrors()
+      const blocksData = await api.getBlocks({
+        outline_id: outlineId,
+        shifu_id: shifuId
+      })
+      const list = blocksData.filter(p => p.type == 'block') as Block[]
+      setBlocks(list)
+      initBlockContentTypes(list)
+      initBlockContentProperties(list)
+      const blockUIList = list.filter(p => p.properties.block_ui)
+      initBlockUITypes(blockUIList)
+      initBlockUIProperties(blockUIList)
+      setIsLoading(false)
+    } catch (error) {
+      console.error(error)
+      setError('Failed to load blocks')
+      setIsLoading(false)
+    }
+  }, [clearBlockErrors]);
+
+  const loadChapters = useCallback(async (shifuId: string) => {
     try {
       setIsLoading(true)
       setError(null)
@@ -253,7 +290,7 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [loadBlocks, loadProfileItemDefinations, buildOutlineTree]);
   const initBlockContentTypes = async (list: Block[]) => {
     const types = list.reduce((prev: any, cur: Block) => {
       prev[cur.properties.block_id] = cur.properties.block_content.type
@@ -314,29 +351,6 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
     return list
   }
 
-  const loadBlocks = async (outlineId: string, shifuId: string) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      clearBlockErrors()
-      const blocksData = await api.getBlocks({
-        outline_id: outlineId,
-        shifu_id: shifuId
-      })
-      const list = blocksData.filter(p => p.type == 'block') as Block[]
-      setBlocks(list)
-      initBlockContentTypes(list)
-      initBlockContentProperties(list)
-      const blockUIList = list.filter(p => p.properties.block_ui)
-      initBlockUITypes(blockUIList)
-      initBlockUIProperties(blockUIList)
-      setIsLoading(false)
-    } catch (error) {
-      console.error(error)
-      setError('Failed to load blocks')
-      setIsLoading(false)
-    }
-  }
   const saveBlocks = async (shifu_id: string) => {
     if (isLoading) {
       return
@@ -508,11 +522,11 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
         setLastSaveTime(new Date())
       }
     },
-    []
+    [isLoading, setBlockError, clearBlockErrors]
   )
 
-  const autoSaveBlocks = useCallback(
-    debounce(
+  const autoSaveBlocks = useMemo(
+    () => debounce(
       async (
         outline: string,
         blocks: Block[],
@@ -872,21 +886,77 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
       currentShifu?.shifu_id || ''
     )
   }
-  const loadModels = async () => {
+  const loadModels = useCallback(async () => {
     const list = await api.getModelList({})
     setModels(list)
-  }
+  }, []);
 
-  const setBlockError = (blockId: string, error: string | null) => {
-    setBlockErrors(prev => ({
-      ...prev,
-      [blockId]: error
-    }))
-  }
 
-  const clearBlockErrors = () => {
-    setBlockErrors({})
-  }
+  const actions = useMemo(() => ({
+    setFocusId,
+    addChapter,
+    setChapters,
+    loadShifu,
+    loadChapters,
+    createChapter,
+    setFocusValue,
+    updateOuline,
+    addSubOutline,
+    addSiblingOutline,
+    removeOutline,
+    replaceOutline,
+    createSiblingUnit,
+    createUnit,
+    loadBlocks,
+    addBlock,
+    setBlockContentPropertiesById,
+    setBlockContentTypesById,
+    setBlockUIPropertiesById,
+    setBlockUITypesById,
+    updateChapterOrder,
+    setBlockContentStateById,
+    setBlocks,
+    saveBlocks,
+    autoSaveBlocks,
+    saveCurrentBlocks,
+    removeBlock,
+    setCurrentNode,
+    loadModels,
+    setBlockError,
+    clearBlockErrors
+  }), [
+    setFocusId,
+    addChapter,
+    setChapters,
+    loadShifu,
+    loadChapters,
+    createChapter,
+    setFocusValue,
+    updateOuline,
+    addSubOutline,
+    addSiblingOutline,
+    removeOutline,
+    replaceOutline,
+    createSiblingUnit,
+    createUnit,
+    loadBlocks,
+    addBlock,
+    setBlockContentPropertiesById,
+    setBlockContentTypesById,
+    setBlockUIPropertiesById,
+    setBlockUITypesById,
+    updateChapterOrder,
+    setBlockContentStateById,
+    setBlocks,
+    saveBlocks,
+    autoSaveBlocks,
+    saveCurrentBlocks,
+    removeBlock,
+    setCurrentNode,
+    loadModels,
+    setBlockError,
+    clearBlockErrors
+  ])
 
   const value: ShifuContextType = {
     currentShifu,
@@ -908,39 +978,7 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
     currentNode,
     profileItemDefinations,
     models,
-    actions: {
-      setFocusId,
-      addChapter,
-      setChapters,
-      loadShifu,
-      loadChapters,
-      createChapter,
-      setFocusValue,
-      updateOuline,
-      addSubOutline,
-      addSiblingOutline,
-      removeOutline,
-      replaceOutline,
-      createSiblingUnit,
-      createUnit,
-      loadBlocks,
-      addBlock,
-      setBlockContentPropertiesById,
-      setBlockContentTypesById,
-      setBlockUIPropertiesById,
-      setBlockUITypesById,
-      updateChapterOrder,
-      setBlockContentStateById,
-      setBlocks,
-      saveBlocks,
-      autoSaveBlocks,
-      saveCurrentBlocks,
-      removeBlock,
-      setCurrentNode,
-      loadModels,
-      setBlockError,
-      clearBlockErrors
-    }
+    actions
   }
 
   return <ShifuContext.Provider value={value}>{children}</ShifuContext.Provider>

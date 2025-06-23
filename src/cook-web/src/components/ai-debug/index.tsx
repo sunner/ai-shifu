@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,7 +74,7 @@ const AIModelDialog = ({ blockId, open, onOpenChange }) => {
     const abortRefs = useRef<AbortController[]>([]);
 
     const [variables, setVariables] = useState({});
-    const init = async () => {
+    const init = useCallback(async () => {
         const block = blocks.find((item) => item.properties.block_id === blockId);
         if (block) {
             const sysPrompt = await api.getSystemPrompt({
@@ -94,7 +94,7 @@ const AIModelDialog = ({ blockId, open, onOpenChange }) => {
                 }]);
             }
         }
-    }
+    }, [blocks, blockId, blockContentProperties]);
     const abort = async () => {
         abortRefs.current.forEach((controller) => {
             if (controller) {
@@ -229,7 +229,7 @@ const AIModelDialog = ({ blockId, open, onOpenChange }) => {
 
     useEffect(() => {
         init();
-    }, [])
+    }, [init])
     return (
         <Dialog open={open} onOpenChange={onOpenChangeHandle} >
             <DialogContent className="flex flex-col sm:max-w-[600px] md:max-w-[800px] max-h-[90vh] overflow-y-auto text-sm">

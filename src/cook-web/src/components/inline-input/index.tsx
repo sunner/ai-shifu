@@ -40,6 +40,7 @@ export const InlineInput: React.FC<InlineInputProps> = ({ isEdit = false, value,
     debouncedOnChange(inputValue);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnChange = useCallback(
     debounce((value: string) => {
       if (value === "") {

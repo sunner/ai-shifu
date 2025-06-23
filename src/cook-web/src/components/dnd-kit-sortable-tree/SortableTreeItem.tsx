@@ -80,22 +80,24 @@ const SortableTreeItemNotMemoized = function SortableTreeItem<
   });
   const isOverParent = useMemo(
     () => !!over?.id && getIsOverParent(parent, over.id),
-    [over?.id]
+    [over?.id, parent]
   );
   const style: CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition: transition ?? undefined,
   };
+  const { onCollapse, item } = props;
   const localCollapse = useMemo(() => {
-    if (!props.onCollapse) return undefined;
-    return () => props.onCollapse?.(props.item.id);
-  }, [props.item.id, props.onCollapse]);
+    if (!onCollapse) return undefined;
+    return () => onCollapse?.(item.id);
+  }, [onCollapse, item.id]);
 
+  const { onRemove } = props;
   const localRemove = useMemo(() => {
-    if (!props.onRemove) return undefined;
+    if (!onRemove) return undefined;
 
-    return () => props.onRemove?.(props.item.id);
-  }, [props.item.id, props.onRemove]);
+    return () => onRemove?.(item.id);
+  }, [onRemove, item.id]);
   return (
     <TreeItemComponent
       {...props}

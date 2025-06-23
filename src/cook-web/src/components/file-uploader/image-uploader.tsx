@@ -2,7 +2,7 @@
 
 import type React from 'react'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,6 +12,7 @@ import { getSiteHost } from '@/config/runtime-config'
 import { useToast } from '@/hooks/use-toast'
 import { useTranslation } from 'react-i18next'
 import api from '@/api'
+import Image from 'next/image'
 
 type ImageResource = {
   resourceUrl?: string
@@ -82,8 +83,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ value, onChange }) => {
       setResourceUrl(res.data)
       setResourceTitle(file.name)
       setResourceScale(100)
-      const img = new Image()
-      img.src = res.data
+      // Image object for preloading
+      const img = globalThis.Image ? new globalThis.Image() : null
+      if (img) {
+        img.src = res.data
+      }
     } catch (error) {
       console.error('Error uploading image:', error)
       alert(t('file-uploader.failed-to-upload-image'))
@@ -92,7 +96,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ value, onChange }) => {
     }
   }
 
-  const handleUrlUpload = async () => {
+  const handleUrlUpload = useCallback(async () => {
     if (!inputUrl) return
     try {
       new URL(inputUrl)
@@ -130,7 +134,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ value, onChange }) => {
       }
       return
     }
-  }
+  }, [inputUrl, toast, t]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -157,11 +161,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ value, onChange }) => {
       resourceTitle,
       resourceScale
     })
-  }, [resourceUrl, resourceTitle, resourceScale])
+  }, [resourceUrl, resourceTitle, resourceScale, onChange])
 
   useEffect(() => {
     handleUrlUpload()
-  }, [])
+  }, [handleUrlUpload])
 
   return (
     <div className='space-y-6'>
@@ -232,10 +236,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ value, onChange }) => {
         </>
       ) : (
         <div className='flex flex-col items-center'>
-          <img
+          <Image
             src={resourceUrl || '/placeholder.svg'}
             alt='Uploaded image'
             className='max-w-full max-h-[400px] object-contain mb-4'
+            width={400}
+            height={400}
           />
           <div className='flex items-center w-full mb-2'>{resourceUrl}</div>
           <div className='flex items-center w-full mb-2'>

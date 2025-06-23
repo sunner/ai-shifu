@@ -16,7 +16,7 @@ const ProfileInject: React.FC<ProfileInjectProps> = ({
   const { currentShifu } = useShifu()
   const handleSelect = useCallback((profile: Profile) => {
     onSelect?.(profile)
-  }, [])
+  }, [onSelect])
 
   return <ProfileSelect value={value} parentId={currentShifu?.shifu_id as unknown as string} onSelect={handleSelect} />
 }

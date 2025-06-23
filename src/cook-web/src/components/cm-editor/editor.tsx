@@ -107,7 +107,7 @@ const Editor: React.FC<EditorProps> = ({
       }
       setDialogOpen(false)
     },
-    [insertText, selectedOption]
+    [insertText, selectContentInfo, deleteSelectedContent]
   )
 
   const handleSelectImage = useCallback(
@@ -134,7 +134,7 @@ const Editor: React.FC<EditorProps> = ({
       }
       setDialogOpen(false)
     },
-    [insertText, selectedOption]
+    [insertText, selectContentInfo, deleteSelectedContent]
   )
 
   const handleSelectVideo = useCallback(
@@ -159,7 +159,7 @@ const Editor: React.FC<EditorProps> = ({
       }
       setDialogOpen(false)
     },
-    [insertText, selectedOption]
+    [insertText, selectContentInfo, deleteSelectedContent]
   )
 
   const slashCommandsExtension = useCallback(() => {
@@ -203,7 +203,7 @@ const Editor: React.FC<EditorProps> = ({
     return () => {
       window.removeEventListener('globalTagClick', handleWrap)
     }
-  }, [])
+  }, [handleTagClick])
 
   return (
     <>

@@ -10,6 +10,7 @@ import { Home, CircleAlert, CircleCheck, TrendingUp } from 'lucide-react';
 import Preivew from '@/components/preview';
 import ShifuSetting from '@/components/shifu-setting';
 import { useTranslation } from 'react-i18next';
+import Image from 'next/image';
 const Header = () => {
     const { t } = useTranslation();
     const alert = useAlert();
@@ -66,10 +67,12 @@ const Header = () => {
                     {
                         currentShifu?.shifu_avatar ? (
                             <div className="bg-blue-100 flex items-center justify-center h-10 w-10 rounded-md p-1 mr-2 overflow-hidden">
-                                <img
+                                <Image
                                     src={currentShifu?.shifu_avatar}
                                     alt="Profile"
                                     className="rounded"
+                                    width={32}
+                                    height={32}
                                 />
                             </div>
                         ) : null
