@@ -340,7 +340,7 @@ const ScriptEditor = ({ id }: { id: string }) => {
     if (id) {
       actions.loadChapters(id)
     }
-  }, [id])
+  }, [id, actions.loadModels, actions.loadChapters])
 
   return (
     <div className='flex flex-col h-screen bg-gray-50'>
