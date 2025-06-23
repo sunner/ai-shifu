@@ -337,11 +337,11 @@ const ScriptEditor = ({ id }: { id: string }) => {
 
   const loadModelsStable = useCallback(() => {
     actions.loadModels()
-  }, [])
+  }, [actions.loadModels])
 
   const loadChaptersStable = useCallback((shifuId: string) => {
     actions.loadChapters(shifuId)
-  }, [])
+  }, [actions.loadChapters])
 
   useEffect(() => {
     console.log('[DEBUG] useEffect triggered with id:', id, 'at', new Date().toISOString())
