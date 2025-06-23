@@ -113,7 +113,6 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
     const result: any = {}
     const processItem = (item: any, parentId = '', depth = 0) => {
       result[item.id] = {
-        ...cataData[item.id],
         parent_id: parentId,
         name: item.name,
         depth: depth,
@@ -131,7 +130,7 @@ export const ShifuProvider: React.FC<{ children: ReactNode }> = ({
       processItem(child, '', 0)
     })
     return result
-  }, [cataData]);
+  }, []);
   const buildOutlineTree = useCallback((items: Outline[]) => {
     const treeData = recursiveCataData(items)
     setCataData(treeData)
