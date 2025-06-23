@@ -340,7 +340,8 @@ const ScriptEditor = ({ id }: { id: string }) => {
     if (id) {
       actions.loadChapters(id)
     }
-  }, [id, actions.loadModels, actions.loadChapters])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   return (
     <div className='flex flex-col h-screen bg-gray-50'>
