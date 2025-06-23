@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { DndProvider, useDrag, useDrop } from 'react-dnd'
 import type { DropTargetMonitor } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -335,12 +335,21 @@ const ScriptEditor = ({ id }: { id: string }) => {
     actions.saveBlocks(currentShifu?.shifu_id || '')
   }
 
-  useEffect(() => {
+  const loadModelsStable = useCallback(() => {
     actions.loadModels()
+  }, [])
+
+  const loadChaptersStable = useCallback((shifuId: string) => {
+    actions.loadChapters(shifuId)
+  }, [])
+
+  useEffect(() => {
+    console.log('[DEBUG] useEffect triggered with id:', id, 'at', new Date().toISOString())
+    loadModelsStable()
     if (id) {
-      actions.loadChapters(id)
+      loadChaptersStable(id)
     }
-  }, [id, actions.loadModels, actions.loadChapters])
+  }, [id, loadModelsStable, loadChaptersStable])
 
   return (
     <div className='flex flex-col h-screen bg-gray-50'>
