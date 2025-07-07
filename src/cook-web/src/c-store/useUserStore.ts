@@ -89,7 +89,7 @@ export const useUserStore = create<UserStoreState, [["zustand/subscribeWithSelec
       }
     },
 
-    // 通过接口检测登录状态
+    // Check login status through API
     checkLogin: () => {
       const state = useUserStore.getState();
       if (state.hasCheckLogin) {
@@ -117,7 +117,7 @@ export const useUserStore = create<UserStoreState, [["zustand/subscribeWithSelec
       }
     },
 
-    // 更新用户信息
+    // Update user information
     updateUserInfo: (userInfo) => {
       set((state) => {
         return {
@@ -172,5 +172,34 @@ export const useUserStore = create<UserStoreState, [["zustand/subscribeWithSelec
         state.fetchProfile();
       }
     },
+
+    // Role detection methods
+    getUserRole: () => {
+      const state = get();
+      const tokenInfo = tokenTool.get();
+      
+      // Check if user is guest
+      if (!state.hasLogin || !state.userInfo || tokenInfo.faked) {
+        return 'guest';
+      }
+      
+      // Check if user is admin
+      if (state.userInfo.role === 'admin' || state.userInfo.is_admin) {
+        return 'admin';
+      }
+      
+      // Check if user is creator
+      if (state.userInfo.role === 'creator' || state.userInfo.is_creator || state.userInfo.can_create) {
+        return 'creator';
+      }
+      
+      // Default to registered user
+      return 'registered';
+    },
+
+    isGuest: () => get().getUserRole() === 'guest',
+    isRegistered: () => ['registered', 'creator', 'admin'].includes(get().getUserRole()),
+    isCreator: () => ['creator', 'admin'].includes(get().getUserRole()),
+    isAdmin: () => get().getUserRole() === 'admin',
   }))
 );

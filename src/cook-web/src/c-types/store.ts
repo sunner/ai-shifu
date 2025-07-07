@@ -70,6 +70,12 @@ export interface UserStoreState {
   setProfile: (profile: any) => void;
   fetchProfile: () => Promise<void>;
   initProfileFetch: () => void;
+  // Role detection methods
+  getUserRole: () => string;
+  isGuest: () => boolean;
+  isRegistered: () => boolean;
+  isCreator: () => boolean;
+  isAdmin: () => boolean;
 }
 
 export interface UiLayoutStoreState {
