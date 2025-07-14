@@ -15,7 +15,6 @@ interface UserInfo {
     name: string;
     email: string;
     mobile: string;
-    state: string;
     openid: string;
     language: string;
     avatar: string;

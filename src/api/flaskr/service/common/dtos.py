@@ -23,7 +23,6 @@ class UserInfo:
     name: str
     email: str
     mobile: str
-    user_state: str
     language: str
     user_avatar: str
     has_password: bool
@@ -37,7 +36,6 @@ class UserInfo:
         name,
         email,
         mobile,
-        user_state,
         wx_openid,
         language,
         has_password,
@@ -50,7 +48,6 @@ class UserInfo:
         self.name = name
         self.email = email
         self.mobile = mobile
-        self.user_state = USE_STATE_VALUES[user_state]
         self.wx_openid = wx_openid
         self.language = language
         self.user_avatar = user_avatar
@@ -65,7 +62,6 @@ class UserInfo:
             "name": self.name,
             "email": self.email,
             "mobile": self.mobile,
-            "state": self.user_state,
             "openid": self.wx_openid,
             "language": self.language,
             "avatar": self.user_avatar,
