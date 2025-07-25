@@ -921,12 +921,13 @@ def register_user_handler(app: Flask, path_prefix: str) -> Flask:
             400:
                 description: parameter error
         """
-        id_token_str = request.get_json().get("id_token", None)
+        json_data = request.get_json()
+        id_token_str = json_data.get("id_token")
         if not id_token_str:
             raise_param_error("id_token")
 
-        course_id = request.get_json().get("course_id", None)
-        language = request.get_json().get("language", "en-US")
+        course_id = json_data.get("course_id")
+        language = json_data.get("language", "en-US")
 
         user_token = verify_google_token(app, id_token_str, course_id, language)
         resp = make_response(make_common_response(user_token))
