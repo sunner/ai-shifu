@@ -12,7 +12,7 @@ from ..common.models import raise_error
 from .common import get_model
 from ..common.dtos import (
     USER_STATE_REGISTERED,
-    USER_STATE_UNTEGISTERED,
+    USER_STATE_UNREGISTERED,
     UserInfo,
     UserToken,
 )
@@ -98,7 +98,7 @@ def verify_google_token(
                     init_first_course(app, user_id)
 
             # Ensure user is registered state
-            if user_info.user_state == USER_STATE_UNTEGISTERED:
+            if user_info.user_state == USER_STATE_UNREGISTERED:
                 user_info.user_state = USER_STATE_REGISTERED
                 if language:
                     user_info.user_language = language
