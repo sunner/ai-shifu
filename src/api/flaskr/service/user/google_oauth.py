@@ -43,6 +43,10 @@ def verify_google_token(
     """
     User = get_model(app)
 
+    # TODO: Implement course_id logic similar to verify_sms_code/verify_mail_code
+    # This would handle profile migration and study record migration when users
+    # link their Google accounts. Currently kept for API consistency.
+
     if not GOOGLE_CLIENT_ID:
         raise_error("USER.GOOGLE_OAUTH_NOT_CONFIGURED")
 
