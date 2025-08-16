@@ -114,8 +114,6 @@ def _handle_input_ask(
                 {"role": "assistant", "content": script.script_content}
             )  # Add assistant message
 
-    # RAG retrieval has been removed from this system
-
     messages.append(
         {
             "role": "user",
