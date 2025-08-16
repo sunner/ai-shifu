@@ -116,7 +116,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="System timezone setting",
         group="app",
     ),
-
     # LLM Configuration
     "OPENAI_API_KEY": EnvVar(
         name="OPENAI_API_KEY",
@@ -234,7 +233,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         group="llm",
         validator=lambda x: 0.0 <= float(x) <= 2.0,
     ),
-
     # Knowledge Base
     "DEFAULT_KB_ID": EnvVar(
         name="DEFAULT_KB_ID",
@@ -267,7 +265,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="Dimension of default embedding model",
         group="knowledge_base",
     ),
-
     # Database Configuration
     "SQLALCHEMY_DATABASE_URI": EnvVar(
         name="SQLALCHEMY_DATABASE_URI",
@@ -303,7 +300,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="SQLAlchemy max overflow connections",
         group="database",
     ),
-
     # Redis Configuration
     "REDIS_HOST": EnvVar(
         name="REDIS_HOST",
@@ -402,7 +398,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="Redis key prefix for IP rate limiting",
         group="redis",
     ),
-
     # Authentication Configuration
     "SECRET_KEY": EnvVar(
         name="SECRET_KEY",
@@ -500,7 +495,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         secret=True,
         group="auth",
     ),
-
     # Alibaba Cloud Configuration
     "ALIBABA_CLOUD_SMS_ACCESS_KEY_ID": EnvVar(
         name="ALIBABA_CLOUD_SMS_ACCESS_KEY_ID",
@@ -592,7 +586,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="Alibaba Cloud OSS Courses URL",
         group="alibaba_cloud",
     ),
-
     # Monitoring and Tracking
     "LANGFUSE_PUBLIC_KEY": EnvVar(
         name="LANGFUSE_PUBLIC_KEY",
@@ -614,7 +607,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="Langfuse host URL",
         group="monitoring",
     ),
-
     # Content Detection
     "CHECK_PROVIDER": EnvVar(
         name="CHECK_PROVIDER",
@@ -655,7 +647,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="Netease Yidun business ID",
         group="content_detection",
     ),
-
     # Lark/Feishu Integration
     "LARK_APP_ID": EnvVar(
         name="LARK_APP_ID",
@@ -670,7 +661,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         secret=True,
         group="integrations",
     ),
-
     # Email Configuration
     "SMTP_PORT": EnvVar(
         name="SMTP_PORT",
@@ -699,7 +689,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="SMTP sender email address",
         group="email",
     ),
-
     # Flask Configuration
     "FLASK_APP": EnvVar(
         name="FLASK_APP",
@@ -732,7 +721,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="Environment (development/production)",
         group="flask",
     ),
-
     # Frontend Configuration
     "REACT_APP_BASEURL": EnvVar(
         name="REACT_APP_BASEURL",
@@ -760,7 +748,6 @@ ENV_VARS: Dict[str, EnvVar] = {
         description="Enable Eruda console for debugging",
         group="frontend",
     ),
-
     # Testing Configuration
     "DJANGO_SETTINGS_MODULE": EnvVar(
         name="DJANGO_SETTINGS_MODULE",

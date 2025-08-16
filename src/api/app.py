@@ -15,6 +15,7 @@ else:
     # Load environment variables first so we can use get_config
     load_dotenv()
     from flaskr.common.config import get_config
+
     timezone = get_config("TZ")
     os.environ["TZ"] = timezone
     time.tzset()

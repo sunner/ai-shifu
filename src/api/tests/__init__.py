@@ -14,4 +14,5 @@ load_dotenv()
 
 # Import and use get_config to set Django settings module
 from flaskr.common.config import get_config
+
 os.environ["DJANGO_SETTINGS_MODULE"] = get_config("DJANGO_SETTINGS_MODULE")
