@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 const contents = {
   "zh-CN": zhContent,
   "en-US": enContent,
+  "fr-FR": enContent,
   "en": enContent,
 }
 

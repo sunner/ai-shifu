@@ -18,6 +18,7 @@ if (typeof window !== 'undefined') {
       fallbackLng: {
         en: ['en-US'],
         zh: ['zh-CN'],
+        fr: ['fr-FR'],
         default: ['en-US'],
       },
       lng: browserLanguage,
@@ -29,7 +30,7 @@ if (typeof window !== 'undefined') {
       },
       returnNull: false,
       load: 'all',
-      supportedLngs: ['en-US', 'zh-CN'],
+      supportedLngs: ['en-US', 'zh-CN', 'fr-FR'],
       nonExplicitSupportedLngs: false,
       react: {
         useSuspense: false,
