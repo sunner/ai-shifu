@@ -8,6 +8,7 @@ import { userInfoStore } from 'Service/storeUtil';
 const aggreements = {
   'zh-CN': zhCNAggreement,
   'en-US': enAggreement,
+  'fr-FR': enAggreement,
   'en': enAggreement,
 };
 
